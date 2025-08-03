@@ -24,7 +24,7 @@ def _getPixels(w, h, px):
         for y in range(w):
             
             #line = line + ' (' + str(x) + ', ' + str(y) + ') '
-            if px[x, y] == (0, 0, 0):
+            if px[y, x] == (0, 0, 0):
                 line = line + " 1 "
             else:
                 line = line + "   "
@@ -52,3 +52,4 @@ px = img.load()
 
 _getPixels(width, height, px)
 
+time.sleep(1000)
