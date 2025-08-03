@@ -10,7 +10,14 @@ import time
 
 #---------------------------------------------------------------------#
 
-#USE C:\Users\chris\source\repos\Python-Image-Reader\images\sprite_test.jpg FOR TESTING
+#USE C:\Users\chris\source\repos\Python-Image-Reader\images\sprite_test.jpg FOR TESTING     [12 x 12]
+#USE C:\Users\chris\source\repos\Python-Image-Reader\images\sprite_test_2.jpg FOR TESTING   [32 x 32]
+
+class FileLocations:
+    outputFile = "C:\\Users\\chris\\source\\repos\\Python-Image-Reader\\files\\demofile.txt"     #defaults to desktop
+    inputFile = ""
+
+#---------------------------------------------------------------------#
 
 #FUNCTION TO BUILD THE STRING FOR THE TEXT FILE
 def _buildtextString(array, coordLine):
@@ -25,56 +32,82 @@ def _buildtextString(array, coordLine):
 
     return string
 
-#FUNCTION TO OUTPUT TO FILE - DOESN'T WORK FULLY ATM
-def _writeToFile(file, text):
-    file.write(text)
-    print("added : " + str(text) + " to file : " + str(file))
+class FileFunctions():
+    #FUNCTION TO OUTPUT TO FILE - DOESN'T WORK FULLY ATM
+    def _writeToFile(file, text):
+        file.write(text)
+        print("added : " + str(text) + " to file : " + str(file))
 
-#FUNCTION TO READ PIXELS
-def _getPixels(w, h, px):
+    #FUNCTION TO READ PIXELS
+    def _getPixels(w, h, px):
 
-    lines = [None] * w    # need enough places for all the data
-    line = ""
-    coordLine = ""
+        lines = [None] * w    # need enough places for all the data
+        line = ""
+        coordLine = ""
 
-    
-    # loop for the width
-    for x in range(h):
-        line = line + "# "
-        # loop for the height
-        for y in range(w):
-            
-            #line = line + ' (' + str(x) + ', ' + str(y) + ') '
-            if px[y, x] == (0, 0, 0):
-                line = line + " 1 "
-                coordLine = coordLine + "-- Vector2(" + str(x) + ", " + str(y) + ") " + " \n" 
-            else:
-                line = line + "   "
-        
-        line = line + " #"
-        lines[x] = line
-        print(line)
 
-        line = "" # resetting string    
-        time.sleep(0.1)
-        # once line is finished it will go to next row
+        # loop for the width
+        for x in range(h):
+            line = line + "# "
+            # loop for the height
+            for y in range(w):
 
-    with open("C:\\Users\\chris\\source\\repos\\Python-Image-Reader\\files\\demofile.txt", "w") as filePath:
-        _writeToFile(filePath, _buildtextString(lines, coordLine))
+                #line = line + ' (' + str(x) + ', ' + str(y) + ') '
+                if px[y, x] == (0, 0, 0):
+                    line = line + " 1 "
+                    coordLine = coordLine + "-- Vector2(" + str(x) + ", " + str(y) + ") " + " \n" 
+                else:
+                    line = line + "   "
 
+            line = line + " #"
+            lines[x] = line
+            print(line)
+
+            line = "" # resetting string    
+            time.sleep(0.1)
+            # once line is finished it will go to next row
+
+        with open(FileLocations.outputFile, "w") as filePath:
+            FileFunctions._writeToFile(filePath, _buildtextString(lines, coordLine))
+
+#---------------------------------------------------------------------#
+
+class BasicCommands():
+    def _start():
+        print("-------------------------------------")
+        print("please enter file to read: ")
+        FileLocations.inputFile = input()
+
+        img = ""
+
+        img = Image.open(FileLocations.inputFile)
+        img = img.convert("RGB")
+
+        #print(img)
+        width, height = img.size
+        px = img.load()
+
+        if width > 32 or height > 32:
+            print("file too big - need to be at most 32x32")
+        else:
+            FileFunctions._getPixels(width, height, px)
 
 #---------------------------------------------------------------------#
 
 #MAIN CODE
-fileLoc = input()
+running = True
 
-img = ""
+while running == True:
+    print("-------------------------------------")
+    print("# IMAGE FILE READER FOR UNITY LEVEL #")
+    print("-------------------------------------")
+    print("Actions you can take:")
+    print("1 - Start Program")
+    print("4 - Exit Program")
 
-img = Image.open(fileLoc)
-img = img.convert("RGB")
-
-#print(img)
-width, height = img.size
-px = img.load()
-
-_getPixels(width, height, px)
+    if input() == "1":
+        BasicCommands._start()
+    elif input() == "4":
+        exit()
+    else:
+        "Invalid Input"
