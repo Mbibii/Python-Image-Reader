@@ -17,6 +17,11 @@ class FileLocations:
     outputFile = "C:\\Users\\chris\\source\\repos\\Python-Image-Reader\\files\\demofile.txt"     #defaults to desktop
     inputFile = ""
 
+class Colors:
+    floor = (0, 0, 0)
+    wall = (255, 0, 0)
+    nothing = (255, 255, 255)
+
 #---------------------------------------------------------------------#
 
 #FUNCTION TO BUILD THE STRING FOR THE TEXT FILE
@@ -53,7 +58,8 @@ class FileFunctions():
             for y in range(w):
 
                 #line = line + ' (' + str(x) + ', ' + str(y) + ') '
-                if px[y, x] == (0, 0, 0):
+                if px[y, x] == Colors.floor and (px[y - 1, x] == Colors.nothing or px[y + 1, x] == Colors.nothing 
+                                                 or px[y, x - 1] == Colors.nothing or px[y, x + 1] == Colors.nothing):
                     line = line + " 1 "
                     coordLine = coordLine + "-- Vector2(" + str(x) + ", " + str(y) + ") " + " \n" 
                 else:
