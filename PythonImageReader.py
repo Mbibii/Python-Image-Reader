@@ -94,15 +94,15 @@ def _getPixels(w, h, px):
                                              #or px[y, x - 1] == Colors.nothing or px[y, x + 1] == Colors.nothing):
             # kojima fix
             if _blackPixel_Threshold(px[y, x]) == 2: #black
-                line = line + "."
+                line = line + ".."
             elif _blackPixel_Threshold(px[y, x]) == 1: #slightly black
-                line = line + "~"
+                line = line + "~~"
             elif _blackPixel_Threshold(px[y, x]) == 4:
-                line = line + "#"
+                line = line + "##"
             elif _blackPixel_Threshold(px[y, x]) == 5:
-                line = line + "["
+                line = line + "[["
             else:
-                line = line + "1"
+                line = line + "11"
             coordLine = coordLine + "-- Vector2(" + str(x) + ", " + str(y) + ") " + " \n"
         line = line + " #"
         lines[y] = line
