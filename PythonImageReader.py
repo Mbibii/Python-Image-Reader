@@ -1,6 +1,5 @@
 from PIL import Image
-import FileReader as fr
-import Data as Data
+import time
 
 
 # A PROGRAM THAT WILL BE USED TO MAKE 2D UNITY LEVELS
@@ -17,6 +16,20 @@ import Data as Data
 
 #---------------------------------------------------------------------#
 
+
+class FileLocations:
+    #filename = "python-image-reader-text-file.txt"
+    #outputFile = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop') + "\\" + filename     #defaults to desktop
+    outputFile = "C:\\Users\\chris\\source\\repos\\Python-Image-Reader\\files\\demofile.txt"
+    inputFile = ""
+
+class Colors:
+    floor = (0, 0, 0)
+    wall = (255, 0, 0)
+    nothing = (255, 255, 255)
+    spawn = (0, 255, 0)
+
+
 #FUNCTION TO BUILD THE STRING FOR THE TEXT FILE
 def _buildtextString(array, coordLine):
     string = ""
@@ -30,17 +43,51 @@ def _buildtextString(array, coordLine):
 
     return string
 
+#FUNCTION TO OUTPUT TO FILE - DOESN'T WORK FULLY ATM
+def _writeToFile(file, text):
+    file.write(text)
+    print("added : " + str(text) + " to file : " + str(file))
+
+    time.sleep(1000)
+    
+#FUNCTION TO READ PIXELS
+
+def _getPixels(w, h, px):
+    lines = [None] * w    # need enough places for all the data
+    line = ""
+    coordLine = ""
+    # loop for the width
+    for x in range(h):
+        line = line + "# "
+        # loop for the height
+        for y in range(w):
+            #line = line + ' (' + str(x) + ', ' + str(y) + ') '
+            if px[y, x] == Colors.floor and (px[y - 1, x] == Colors.nothing or px[y + 1, x] == Colors.nothing 
+                                             or px[y, x - 1] == Colors.nothing or px[y, x + 1] == Colors.nothing):
+                line = line + " 1 "
+                coordLine = coordLine + "-- Vector2(" + str(x) + ", " + str(y) + ") " + " \n" 
+            else:
+                line = line + "   "
+        line = line + " #"
+        lines[x] = line
+        print(line)
+        line = "" # resetting string    
+        time.sleep(0.1)
+        # once line is finished it will go to next row
+    with open(FileLocations.outputFile, "w") as filePath:
+        _writeToFile(filePath, _buildtextString(lines, coordLine))
+
 #---------------------------------------------------------------------#
 
 class BasicCommands():
     def _start():
         print("-------------------------------------")
         print("please enter file to read: ")
-        Data.FileLocations.inputFile = input()
+        FileLocations.inputFile = input()
 
         img = ""
 
-        img = Image.open(Data.FileLocations.inputFile)
+        img = Image.open(FileLocations.inputFile)
         img = img.convert("RGB")
 
         #print(img)
@@ -50,7 +97,7 @@ class BasicCommands():
         if width > 32 or height > 32:
             print("file too big - need to be at most 32x32")
         else:
-            fr._getPixels(width, height, px)
+            _getPixels(width, height, px)
 
 #-----------------------------C----------------------------------------#
 
