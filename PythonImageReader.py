@@ -25,9 +25,9 @@ class FileLocations:
 
 class Colors:
     floor = (0, 0, 0)
-    wall = (255, 0, 0)
-    nothing = (255, 255, 255)
-    spawn = (0, 255, 0)
+    wall = (255, 0, 0) # not used
+    nothing = (255, 255, 255) 
+    spawn = (0, 255, 0) # not used
 
 
 #FUNCTION TO BUILD THE STRING FOR THE TEXT FILE
@@ -49,6 +49,35 @@ def _writeToFile(file, text):
     print("added : " + str(text) + " to file : " + str(file))
 
     time.sleep(1000)
+
+def _blackPixel_Threshold(pixelCol):
+
+    # THIS FUNCTION WILL BE USED TO GET A THRESHOLD FOR THE BLACK PIXELS SO THEN IT'S A LOT MORE DYNAMIC
+
+    THRESH = 80
+    LIGHT_THRESH = 110
+    LIGHTER_THRESH = 140
+    LIGHTERER_THRESH = 180
+
+    r = pixelCol[0]
+    g = pixelCol[1]
+    b = pixelCol[2]
+
+    r_base = Colors.floor[0]
+    g_base = Colors.floor[1]
+    b_base = Colors.floor[2]
+
+    if abs(r_base - r) > THRESH or abs(g_base - g) > THRESH or abs(b_base - b) > THRESH:
+        if abs(r_base - r) < LIGHT_THRESH or abs(g_base - g) < LIGHT_THRESH or abs(b_base - b) < LIGHT_THRESH:
+            return 1
+        elif abs(r_base - r) < LIGHTER_THRESH or abs(g_base - g) < LIGHTER_THRESH or abs(b_base - b) < LIGHTER_THRESH:
+            return 4
+        elif abs(r_base - r) < LIGHTERER_THRESH or abs(g_base - g) < LIGHTERER_THRESH or abs(b_base - b) < LIGHTERER_THRESH:
+            return 5
+        else:
+            return 0
+    else:
+        return 2
     
 #FUNCTION TO READ PIXELS
 
@@ -62,14 +91,22 @@ def _getPixels(w, h, px):
         # loop for the height
         for y in range(w):
             #line = line + ' (' + str(x) + ', ' + str(y) + ') '
-            if px[y, x] == Colors.floor and (px[y - 1, x] == Colors.nothing or px[y + 1, x] == Colors.nothing 
-                                             or px[y, x - 1] == Colors.nothing or px[y, x + 1] == Colors.nothing):
-                line = line + " 1 "
-                coordLine = coordLine + "-- Vector2(" + str(x) + ", " + str(y) + ") " + " \n" 
+            #if px[y, x] == Colors.floor and (px[y - 1, x] == Colors.nothing or px[y + 1, x] == Colors.nothing 
+                                             #or px[y, x - 1] == Colors.nothing or px[y, x + 1] == Colors.nothing):
+            # kojima fix
+            if _blackPixel_Threshold(px[y, x]) == 2: #black
+                line = line + " . "
+            elif _blackPixel_Threshold(px[y, x]) == 1: #slightly black
+                line = line + " ~ "
+            elif _blackPixel_Threshold(px[y, x]) == 4:
+                line = line + " # "
+            elif _blackPixel_Threshold(px[y, x]) == 5:
+                line = line + " [ "
             else:
-                line = line + "   "
+                line = line + " 1 "
+            coordLine = coordLine + "-- Vector2(" + str(x) + ", " + str(y) + ") " + " \n"
         line = line + " #"
-        lines[x] = line
+        lines[y] = line
         print(line)
         line = "" # resetting string    
         time.sleep(0.1)
@@ -95,7 +132,7 @@ class BasicCommands():
         px = img.load()
 
         if width > 32 or height > 32:
-            print("file too big - need to be at most 32x32")
+            print("file too big - needs to be at most 32x32")
         else:
             _getPixels(width, height, px)
 
