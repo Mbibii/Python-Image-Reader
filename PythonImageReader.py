@@ -108,7 +108,7 @@ def _getPixels(w, h, px):
         lines[y] = line
         print(line)
         line = "" # resetting string    
-        time.sleep(0.1)
+        #time.sleep(0.1)
         # once line is finished it will go to next row
     with open(FileLocations.outputFile, "w") as filePath:
         _writeToFile(filePath, _buildtextString(lines, coordLine))
