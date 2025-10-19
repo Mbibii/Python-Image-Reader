@@ -16,7 +16,6 @@ import time
 
 #---------------------------------------------------------------------#
 
-
 class FileLocations:
     #filename = "python-image-reader-text-file.txt"
     #outputFile = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop') + "\\" + filename     #defaults to desktop
@@ -46,7 +45,7 @@ def _buildtextString(array, coordLine):
 #FUNCTION TO OUTPUT TO FILE - DOESN'T WORK FULLY ATM
 def _writeToFile(file, text):
     file.write(text)
-    print("added : " + str(text) + " to file : " + str(file))
+    #print("added : " + str(text) + " to file : " + str(file))
 
     time.sleep(1000)
 
@@ -95,15 +94,15 @@ def _getPixels(w, h, px):
                                              #or px[y, x - 1] == Colors.nothing or px[y, x + 1] == Colors.nothing):
             # kojima fix
             if _blackPixel_Threshold(px[y, x]) == 2: #black
-                line = line + " . "
+                line = line + "."
             elif _blackPixel_Threshold(px[y, x]) == 1: #slightly black
-                line = line + " ~ "
+                line = line + "~"
             elif _blackPixel_Threshold(px[y, x]) == 4:
-                line = line + " # "
+                line = line + "#"
             elif _blackPixel_Threshold(px[y, x]) == 5:
-                line = line + " [ "
+                line = line + "["
             else:
-                line = line + " 1 "
+                line = line + "1"
             coordLine = coordLine + "-- Vector2(" + str(x) + ", " + str(y) + ") " + " \n"
         line = line + " #"
         lines[y] = line
@@ -131,10 +130,12 @@ class BasicCommands():
         width, height = img.size
         px = img.load()
 
-        if width > 32 or height > 32:
-            print("file too big - needs to be at most 32x32")
-        else:
-            _getPixels(width, height, px)
+        _getPixels(width, height, px)
+
+        #if (width > 32 or height > 32):
+        #    print("file too big - needs to be at most 32x32")
+        #else:
+        #    _getPixels(width, height, px)
 
 #-----------------------------C----------------------------------------#
 
